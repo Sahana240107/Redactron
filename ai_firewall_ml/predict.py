@@ -6,7 +6,7 @@ from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassific
 # ==============================
 # CONFIG
 # ==============================
-MODEL_PATH = "./results/checkpoint-1350"  # change if your model folder is different
+MODEL_PATH = "./model"  # change if your model folder is different
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ==============================
