@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #252628;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Glow */
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.25;
+  z-index: 0;
+}
+
+body::before {
+  width: 350px;
+  height: 350px;
+  background: #888B5D;
+  top: -120px;
+  left: -120px;
+}
+
+body::after {
+  width: 300px;
+  height: 300px;
+  background: #ECAD81;
+  bottom: -120px;
+  right: -120px;
+}
+
+/* Wrapper */
+.about-wrapper {
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Main Card */
+.about-card {
+  width: 500px;
+  background: #ECAD81;
+  padding: 50px 40px;
+  border-radius: 25px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative Olive Spots */
+.about-card::before,
+.about-card::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #888B5D;
+  opacity: 0.35;
+}
+
+.about-card::before {
+  width: 140px;
+  height: 140px;
+  top: -50px;
+  right: -50px;
+}
+
+.about-card::after {
+  width: 100px;
+  height: 100px;
+  bottom: -40px;
+  left: -40px;
+}
+
+/* Title */
+.about-card h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  color: #252628;
+  margin-bottom: 25px;
+}
+
+/* Text */
+.about-text {
+  color: #252628;
+  font-size: 15px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+/* Contact Panel */
+.contact-panel {
+  margin-top: 30px;
+  padding: 20px;
+  background: #252628;
+  border-radius: 20px;
+  color: #FCD7BD;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.contact-panel h3 {
+  margin-bottom: 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+}
+
+.contact-panel p {
+  font-size: 14px;
+  margin: 6px 0;
+}

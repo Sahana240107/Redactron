@@ -12,6 +12,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ result: null });
       });
 
-    return true; // keep message channel open for async response
+    return true;
+  }
+
+  if (message.type === "FIREWALL_STATUS") {
+    if (message.status === "BLOCK") {
+      // Increment blockCount every time a new BLOCK is detected
+      chrome.storage.local.get(["blockCount"], (data) => {
+        const next = (data.blockCount || 0) + 1;
+        chrome.storage.local.set({ blockCount: next });
+      });
+
+      // Auto-open popup
+      chrome.action.openPopup();
+    }
   }
 });

@@ -1,0 +1,7 @@
+# Handle line endings automatically
+* text=auto
+# Force these model files to always use LF
+*.json text eol=lf
+*.bin binary
+*.pt binary
+*.pkl binary
