@@ -36,6 +36,23 @@ regex_patterns = {
     "api_key": r"\b[A-Za-z0-9]{32,}\b"
 }
 
+# ==============================
+# PLACEHOLDER MAP
+# ==============================
+placeholder_map = {
+    "aadhaar": "[AADHAAR]",
+    "email": "[EMAIL]",
+    "phone": "[PHONE]",
+    "api_key": "[API_KEY]"
+}
+
+# Common name patterns — basic heuristic: capitalised words after
+# "my name is", "I am", "I'm", "name:" etc.
+name_pattern = re.compile(
+    r"(?:my name is|i am|i'm|name\s*:)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)",
+    re.IGNORECASE
+)
+
 
 def rule_based_detection(text):
     matches = {}
@@ -44,6 +61,26 @@ def rule_based_detection(text):
         if found:
             matches[key] = found
     return matches
+
+
+# ==============================
+# REDACTION FUNCTION
+# ==============================
+def redact_text(text, rule_matches):
+    redacted = text
+
+    # Redact regex-detected patterns
+    for key, pattern in regex_patterns.items():
+        placeholder = placeholder_map.get(key, "[REDACTED]")
+        redacted = re.sub(pattern, placeholder, redacted)
+
+    # Redact names using heuristic pattern
+    def replace_name(match):
+        return match.group(0).replace(match.group(1), "[NAME]")
+
+    redacted = name_pattern.sub(replace_name, redacted)
+
+    return redacted
 
 
 # ==============================
@@ -98,13 +135,19 @@ def predict(text):
 
     risk_score, action = calculate_risk(label, confidence, rule_matches)
 
+    # Generate redacted version if action is BLOCK or REDACT
+    redacted = None
+    if action in ("BLOCK", "REDACT"):
+        redacted = redact_text(text, rule_matches)
+
     return {
         "input_text": text,
         "predicted_label": label,
         "confidence": round(confidence, 4),
         "risk_score": round(risk_score, 4),
         "action": action,
-        "rule_matches": rule_matches
+        "rule_matches": rule_matches,
+        "redacted_text": redacted  # None if ALLOW
     }
 
 

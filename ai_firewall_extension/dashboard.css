@@ -1,0 +1,271 @@
+/* ===== GOOGLE FONTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@500&display=swap');
+
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+  height: 100vh;
+  background: #252628;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Glow Spots */
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.25;
+  z-index: 0;
+}
+
+body::before {
+  width: 500px;
+  height: 500px;
+  background: #888B5D;
+  top: -150px;
+  left: -150px;
+}
+
+body::after {
+  width: 400px;
+  height: 400px;
+  background: #ECAD81;
+  bottom: -120px;
+  right: -120px;
+}
+
+/* ===== PAGE LAYOUT ===== */
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== TITLE OUTSIDE BOX ===== */
+.main-title {
+  text-align: center;
+}
+
+.main-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  letter-spacing: 3px;
+  color: #ECAD81;
+  position: relative;
+  text-transform: uppercase;
+}
+
+/* Stylish underline bar */
+.main-title h1::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 5px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #888B5D, #ECAD81);
+}
+
+/* Subtitle */
+.main-title .subtitle {
+  margin-top: 25px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #FCD7BD;
+}
+
+/* ===== MAIN CARD ===== */
+.glass-card {
+  width: 430px;
+  padding: 50px;
+  border-radius: 30px;
+  background: #ECAD81;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative green spots inside card */
+.glass-card::before,
+.glass-card::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: #888B5D;
+  opacity: 0.35;
+}
+
+.glass-card::before {
+  width: 140px;
+  height: 140px;
+  top: -50px;
+  right: -50px;
+}
+
+.glass-card::after {
+  width: 100px;
+  height: 100px;
+  bottom: -40px;
+  left: -40px;
+}
+
+/* ===== RISK BOX ===== */
+.risk-box {
+  background: #252628;
+  padding: 35px;
+  border-radius: 25px;
+  margin-bottom: 30px;
+}
+
+.risk-number {
+  font-size: 72px;
+  font-weight: bold;
+  color: #ECAD81;
+}
+
+.risk-label {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #FCD7BD;
+  letter-spacing: 1px;
+}
+
+/* ===== BUTTON WITH FILL ANIMATION ===== */
+.status {
+  position: relative;
+  padding: 15px;
+  border-radius: 25px;
+  background: #888B5D;
+  cursor: pointer;
+  overflow: hidden;
+  font-weight: 600;
+  color: #252628;
+  letter-spacing: 1px;
+}
+
+.status::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: #FCD7BD;
+  transition: width 0.4s ease;
+  z-index: 0;
+}
+
+.status:hover::before {
+  width: 100%;
+}
+
+.status span {
+  position: relative;
+  z-index: 1;
+}
+/* Wrapper to align title + character */
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Floating AI Buddy */
+.ai-buddy {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 90px;
+  height: 110px;
+  cursor: pointer;
+  animation: float 4s ease-in-out infinite;
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+.ai-buddy:hover {
+  transform: scale(1.1);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Contact Popup Hidden State */
+.contact-panel {
+  position: fixed;
+  bottom: 150px;
+  right: 30px;
+  width: 260px;
+  padding: 20px;
+  background: #252628;
+  border-radius: 20px;
+  color: #FCD7BD;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  text-align: center;
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 9;
+}
+
+/* When Active */
+.contact-panel.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.contact-panel h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.mini-text {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 14px;
+}
+
+/* About Button */
+.about-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #ECAD81;
+  color: #252628;
+  border-radius: 18px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.about-btn:hover {
+  background: #888B5D;
+  color: #FCD7BD;
+  transform: scale(1.05);
+}

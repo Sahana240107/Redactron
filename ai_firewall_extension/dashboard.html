@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AI Firewall Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<!-- Floating AI Buddy -->
+<div class="ai-buddy" id="aiBuddy">
+  <svg viewBox="0 0 200 200" width="100%" height="100%">
+    <circle cx="100" cy="90" r="50" fill="#FCD7BD"/>
+    <circle cx="80" cy="85" r="8" fill="#252628"/>
+    <circle cx="120" cy="85" r="8" fill="#252628"/>
+    <path d="M75 105 Q100 125 125 105"
+          stroke="#252628"
+          stroke-width="4"
+          fill="transparent"
+          stroke-linecap="round"/>
+    <line x1="100" y1="40" x2="100" y2="20"
+          stroke="#888B5D"
+          stroke-width="4"/>
+    <circle cx="100" cy="15" r="6" fill="#888B5D"/>
+    <rect x="65" y="130" width="70" height="40" rx="20" fill="#ECAD81"/>
+  </svg>
+</div>
+
+<!-- Contact Popup -->
+<div class="contact-panel" id="contactPanel">
+  <h3>Curious who built this digital bodyguard? </h3>
+  <p class="mini-text">
+    We promise we’re friendlier than the firewall looks.
+  </p>
+  <a href="about.html" class="about-btn">
+     Meet The Humans Behind The AI
+  </a>
+</div>
+
+<div class="page">
+
+  <div class="main-title">
+    <h1>AI Firewall</h1>
+    <p class="subtitle">Real-Time Risk Monitor</p>
+  </div>
+
+  <div class="glass-card">
+    <div class="risk-box">
+      <div class="risk-number">0</div>
+      <div class="risk-label">Risks Detected</div>
+    </div>
+
+    <div class="status">
+      <span>System Status: ACTIVE</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- External JS file -->
+<script src="dashboard.js"></script>
+
+</body>
+</html>

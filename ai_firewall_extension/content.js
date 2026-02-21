@@ -17,7 +17,7 @@ async function checkTextWithAPI(text) {
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    console.log("API response:", data); // 👈 so you can see what backend returns
+    console.log("API response:", data);
     return data;
   } catch (error) {
     console.error("AI Firewall API error:", error);
@@ -25,37 +25,28 @@ async function checkTextWithAPI(text) {
   }
 }
 
-function showWarning(element) {
-  if (element.dataset.firewallWarned) return;
-  element.dataset.firewallWarned = "true";
-  element.style.outline = "3px solid red";
+function redactElement(el, redactedText) {
+  const textToSet = redactedText || "***";
 
-  const warning = document.createElement("div");
-  warning.textContent = "⚠️ AI Firewall: Sensitive content detected!";
-  warning.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 999999;
-    background: #fff0f0;
-    color: red;
-    font-weight: bold;
-    font-size: 14px;
-    padding: 12px 16px;
-    border: 2px solid red;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  `;
-  warning.className = "ai-firewall-warning";
-  document.body.appendChild(warning);
-
-  // auto-dismiss after 4 seconds
-  setTimeout(() => {
-    warning.remove();
-    delete element.dataset.firewallWarned;
-    element.style.outline = "";
-  }, 4000);
+  if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+    const proto = el.tagName === "INPUT"
+      ? window.HTMLInputElement.prototype
+      : window.HTMLTextAreaElement.prototype;
+    const nativeSetter = Object.getOwnPropertyDescriptor(proto, "value");
+    if (nativeSetter && nativeSetter.set) {
+      nativeSetter.set.call(el, textToSet);
+    } else {
+      el.value = textToSet;
+    }
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  } else if (el.isContentEditable) {
+    el.innerText = textToSet;
+  }
 }
+
+// Keep track of the last flagged input element and redacted text
+let lastFlaggedElement = null;
 
 const handleInput = debounce(async (event) => {
   const el = event.target;
@@ -68,21 +59,42 @@ const handleInput = debounce(async (event) => {
   if (!isTypable) return;
 
   const text = (el.value || el.innerText || "").trim();
-  console.log("Detected input:", text); // 👈 confirms events are firing
+  console.log("Detected input:", text);
 
   if (text.length <= 3) return;
 
   const result = await checkTextWithAPI(text);
-  if (result && result.action === "BLOCK") {
-    showWarning(el);
+  const status = (result && result.action === "BLOCK") ? "BLOCK" : "SAFE";
+
+  if (status === "BLOCK") {
+    // Save the element and redacted text — wait for user to click Redact in popup
+    lastFlaggedElement = el;
+    chrome.storage.local.set({
+      firewallStatus: status,
+      redactedText: result.redacted_text || "***"
+    });
+  } else {
+    lastFlaggedElement = null;
+    chrome.storage.local.set({ firewallStatus: status, redactedText: null });
   }
+
+  chrome.runtime.sendMessage({ type: "FIREWALL_STATUS", status });
+
 }, 600);
 
-// ✅ useCapture: true — catches events BEFORE the page can swallow them
+// Listen for redact command from popup
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === "DO_REDACT" && lastFlaggedElement) {
+    redactElement(lastFlaggedElement, message.redactedText);
+    lastFlaggedElement = null;
+    chrome.storage.local.set({ firewallStatus: "SAFE", redactedText: null });
+    chrome.runtime.sendMessage({ type: "FIREWALL_STATUS", status: "SAFE" });
+  }
+});
+
 document.addEventListener("input", handleInput, true);
 document.addEventListener("keyup", handleInput, true);
 
-// ✅ For Shadow DOM inputs — use MutationObserver to attach listeners directly
 function attachToShadowInputs(root) {
   root.querySelectorAll("input, textarea").forEach((el) => {
     if (el.dataset.firewallAttached) return;
@@ -93,17 +105,12 @@ function attachToShadowInputs(root) {
   });
 }
 
-// Watch for dynamically added inputs (like GitHub's search bar)
 const observer = new MutationObserver(() => {
   attachToShadowInputs(document);
-
-  // also check shadow roots
   document.querySelectorAll("*").forEach((el) => {
     if (el.shadowRoot) attachToShadowInputs(el.shadowRoot);
   });
 });
 
 observer.observe(document.body, { childList: true, subtree: true });
-
-// Run once immediately on load
 attachToShadowInputs(document);
