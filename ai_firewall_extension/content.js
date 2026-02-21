@@ -80,7 +80,7 @@ const handleInput = debounce(async (event) => {
 
   chrome.runtime.sendMessage({ type: "FIREWALL_STATUS", status });
 
-}, 600);
+}, 300);
 
 // Listen for redact command from popup
 chrome.runtime.onMessage.addListener((message) => {

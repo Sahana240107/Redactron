@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderStatus(status) {
     if (status === "BLOCK") {
-      riskStatus.textContent = "⚠️ Sensitive content detected!";
+      riskStatus.textContent = "Sensitive content detected!";
       riskStatus.className   = "risk-status danger";
       redactBtn.style.display = "block";
     } else if (status === "SAFE") {
-      riskStatus.textContent = "✅ All Clear";
+      riskStatus.textContent = "All Clear";
       riskStatus.className   = "risk-status safe";
       redactBtn.style.display = "none";
     } else {
